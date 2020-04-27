@@ -110,7 +110,8 @@ class Player(Ship):
                 for obj in objs:
                     if laser.collision(obj):
                         objs.remove(obj)
-                        self.lasers.remove(laser)
+                        if laser in self.lasers:
+                            self.lasers.remove(laser)
 
     def draw(self, window):
         super().draw(window)
@@ -164,7 +165,7 @@ def main():
     player_vel = 12 # velocity
     laser_vel = 6
 
-    player = Player(300, 650)
+    player = Player(300, 630)
 
     clock = pygame.time.Clock()
 
@@ -216,7 +217,8 @@ def main():
         # exit the game when window 'x' is clicked
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                #run = False
+                quit()
 
         # move player
         keys = pygame.key.get_pressed()
@@ -226,7 +228,7 @@ def main():
             player.x += player_vel
         if keys[pygame.K_w] and player.y - player_vel > 0: # up
             player.y -= player_vel
-        if keys[pygame.K_s] and player.y + player_vel + player.get_height() < HEIGHT: # down
+        if keys[pygame.K_s] and player.y + player_vel + player.get_height() + 15 < HEIGHT: # down
             player.y += player_vel
         if keys[pygame.K_SPACE]:
             player.shoot()
@@ -248,6 +250,21 @@ def main():
 
         player.move_lasers(-laser_vel, enemies)
             
+# Main Menu
+def main_menu():
+    title_font = pygame.font.SysFont("comicsans", 70)
+    run = True
+    while run:
+        WIN.blit(BG, (0,0))
+        title_label = title_font.render("Click the mouse to begin...", 1, (255,255,255))
+        WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 350))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                main()
 
+    quit()
 
-main()
+main_menu()
